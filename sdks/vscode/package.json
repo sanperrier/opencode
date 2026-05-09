@@ -89,7 +89,8 @@
     "pretest": "bun run compile",
     "test": "vscode-test",
     "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-    "watch:esbuild": "node esbuild.js --watch"
+    "watch:esbuild": "node esbuild.js --watch",
+    "prepare": "cd ../.. && husky sdks/vscode/.husky"
   },
   "devDependencies": {
     "@oxc-node/core": "^0.1.0",
@@ -102,6 +103,12 @@
     "@vscode/test-electron": "^2.5.2",
     "esbuild": "^0.25.3",
     "eslint": "^9.25.1",
+    "lint-staged": "^17.0.3",
     "typescript": "^5.8.3"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "bun run test"
+    ]
   }
 }

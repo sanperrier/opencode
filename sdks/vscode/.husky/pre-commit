@@ -1,0 +1,1 @@
+cd sdks/vscode && bunx lint-staged
