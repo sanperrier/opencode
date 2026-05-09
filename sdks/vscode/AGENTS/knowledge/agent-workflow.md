@@ -5,8 +5,8 @@
 ### Working Area Purpose
 
 - Trust: high
-- Fact: `AGENTS/` is the local agent working area for this VS Code extension effort. It stores the current plan and a scoped knowledge base to reduce repeated context loading.
-- Sources: [`../plan.md`](../plan.md), [`./index.md`](./index.md)
+- Fact: `AGENTS/` is the local agent working area for this VS Code extension effort. It stores the current plan, workflow docs, and a scoped knowledge base to reduce repeated context loading.
+- Sources: [`../plan.md`](../plan.md), [`../workflow.md`](../workflow.md), [`./index.md`](./index.md)
 
 ### Plan File
 
@@ -37,3 +37,21 @@
 - Trust: high
 - Fact: Add or update facts only when they are likely to help future agents avoid re-reading broad context; keep groups scoped by domain and add new groups to the index.
 - Sources: User instruction in this session; [`./index.md`](./index.md)
+
+### Workflow Hub
+
+- Trust: high
+- Fact: `AGENTS/workflow.md` is the entrypoint for the iteration workflow; it links to role- and phase-specific workflow files so agents can read only relevant instructions.
+- Sources: [`../workflow.md`](../workflow.md), [`../workflow/roles.md`](../workflow/roles.md)
+
+### Iteration Phases
+
+- Trust: high
+- Fact: Iterations follow 4 phases: user-accepted spec, user-approved plan, focused implementation/review loop with up to 3 reviewer rejection rounds, then lead finalization with user review and plan/knowledge updates.
+- Sources: [`../workflow.md`](../workflow.md), [`../workflow/iteration-overview.md`](../workflow/iteration-overview.md), [`../workflow/phase-1-spec.md`](../workflow/phase-1-spec.md), [`../workflow/phase-2-plan.md`](../workflow/phase-2-plan.md), [`../workflow/phase-3-implementation-review.md`](../workflow/phase-3-implementation-review.md), [`../workflow/phase-4-finalization.md`](../workflow/phase-4-finalization.md)
+
+### Locked Iteration Artifacts
+
+- Trust: high
+- Fact: After user acceptance, `AGENTS/iterationX.spec.md` is locked/read-only; after user approval, `AGENTS/iterationX.plan.md` is locked/read-only. focused-coder and focused-code-reviewer may read but must not edit those artifacts.
+- Sources: [`../workflow.md`](../workflow.md), [`../workflow/phase-1-spec.md`](../workflow/phase-1-spec.md), [`../workflow/phase-2-plan.md`](../workflow/phase-2-plan.md), [`../workflow/phase-3-implementation-review.md`](../workflow/phase-3-implementation-review.md)

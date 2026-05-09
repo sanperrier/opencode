@@ -10,6 +10,8 @@
 
 - Use `AGENTS/plan.md` for the current goal, plan, open questions, and verification targets.
 - Use `AGENTS/knowledge/` as the scoped knowledge base. Start with `AGENTS/knowledge/index.md`, then read only the fact groups relevant to the current task.
+- Use `AGENTS/workflow.md` to discover the iteration workflow. Read only the linked workflow files relevant to your role and current phase.
+- Iterations follow 4 phases: accepted spec, approved plan, focused implementation/review loop with up to 3 rejection rounds, then lead finalization with user review and plan/knowledge updates.
 - Every stored fact should include a trust score (`low`, `medium`, `high`) and source links to code, docs, tests, or live observations.
 - Add or update knowledge when a fact is likely to prevent future agents from re-reading broad context; keep groups focused by domain.
 
