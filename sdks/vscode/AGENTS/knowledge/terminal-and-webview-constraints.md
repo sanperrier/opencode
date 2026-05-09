@@ -10,21 +10,21 @@
 
 ### Native Terminal Limits
 
-- Trust: medium
-- Fact: VS Code public extension APIs allow native integrated terminals in the terminal panel or editor area, but do not expose a way to create a second native Terminal container for one extension.
-- Sources: VS Code `TerminalLocation` / `ExtensionTerminalOptions` documentation checked during planning; local code uses only `createTerminal` in [`../../src/extension.ts`](../../src/extension.ts)
+- Trust: high
+- Fact: VS Code public extension APIs allow native integrated terminals in the built-in Terminal view/panel, editor area, or new window workflows, but do not expose a way to create a custom extension-owned native Terminal container or move one terminal instance into a custom extension view container.
+- Sources: VS Code Terminal Basics docs, `https://code.visualstudio.com/docs/terminal/basics`; VS Code Custom Layout docs, `https://code.visualstudio.com/docs/configure/custom-layout`; local code uses only `createTerminal` in [`../../src/extension.ts`](../../src/extension.ts)
 
 ### Secondary Sidebar Limits
 
-- Trust: medium
-- Fact: The Secondary Sidebar hosts views, not editor tabs; public extension APIs do not expose a way to move one native terminal editor tab into the Secondary Sidebar.
-- Sources: VS Code contribution point documentation checked during planning; current extension has no `views` or `viewsContainers` contributions in [`../../package.json`](../../package.json)
+- Trust: high
+- Fact: The Secondary Side Bar hosts views. Extensions cannot contribute views directly to the Secondary Side Bar by default, but users can drag views from the Primary Side Bar or Panel into it. Public extension APIs do not expose a way to move one native terminal editor tab into the Secondary Side Bar.
+- Sources: VS Code Sidebars UX docs, `https://code.visualstudio.com/api/ux-guidelines/sidebars`; VS Code Custom Layout docs, `https://code.visualstudio.com/docs/configure/custom-layout`; current extension has no `views` or `viewsContainers` contributions in [`../../package.json`](../../package.json)
 
 ### Movable Extension View Path
 
 - Trust: high
-- Fact: A contributed `WebviewViewProvider` view can be moved by the user to the Secondary Sidebar, making it the supported path for an opencode-only movable surface.
-- Sources: VS Code view contribution documentation checked during planning; current extension has no view provider registration in [`../../src/extension.ts`](../../src/extension.ts) and no view contribution in [`../../package.json`](../../package.json)
+- Fact: A contributed View inside a View Container can be moved by the user to the Secondary Side Bar, making View Containers plus Views the supported path for an extension-owned movable opencode surface. The view content may be a Tree View, Welcome View, or Webview View depending on the feature need.
+- Sources: VS Code Views UX docs, `https://code.visualstudio.com/api/ux-guidelines/views`; VS Code Tree View guide, `https://code.visualstudio.com/api/extension-guides/tree-view`; current extension has no view provider registration in [`../../src/extension.ts`](../../src/extension.ts) and no view contribution in [`../../package.json`](../../package.json)
 
 ### True Terminal-Like Webview Tradeoff
 
