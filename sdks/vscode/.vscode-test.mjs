@@ -1,5 +1,10 @@
 import { defineConfig } from "@vscode/test-cli"
 
 export default defineConfig({
-  files: "out/test/**/*.test.js",
+  files: "src/**/*.test.{js,ts}",
+  mocha: {
+    nodeOptions: ["--import @oxc-node/core/register"],
+  }
 })
+
+

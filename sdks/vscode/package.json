@@ -83,26 +83,25 @@
   "scripts": {
     "vscode:prepublish": "bun run package",
     "compile": "bun run check-types && bun run lint && node esbuild.js",
-    "watch:esbuild": "node esbuild.js --watch",
-    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
     "package": "bun run check-types && bun run lint && node esbuild.js --production",
-    "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "bun run compile-tests && bun run compile && bun run lint",
     "check-types": "tsc --noEmit",
     "lint": "eslint src",
-    "test": "vscode-test"
+    "pretest": "bun run compile",
+    "test": "vscode-test",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "watch:esbuild": "node esbuild.js --watch"
   },
   "devDependencies": {
-    "@types/vscode": "^1.94.0",
+    "@oxc-node/core": "^0.1.0",
     "@types/mocha": "^10.0.10",
-    "@types/node": "20.x",
+    "@types/node": "22",
+    "@types/vscode": "^1.94.0",
     "@typescript-eslint/eslint-plugin": "^8.31.1",
     "@typescript-eslint/parser": "^8.31.1",
-    "eslint": "^9.25.1",
-    "esbuild": "^0.25.3",
-    "typescript": "^5.8.3",
     "@vscode/test-cli": "^0.0.11",
-    "@vscode/test-electron": "^2.5.2"
+    "@vscode/test-electron": "^2.5.2",
+    "esbuild": "^0.25.3",
+    "eslint": "^9.25.1",
+    "typescript": "^5.8.3"
   }
 }

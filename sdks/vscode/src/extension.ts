@@ -1,5 +1,5 @@
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
 
 import * as vscode from "vscode"
 
@@ -78,7 +78,7 @@ export function activate(context: vscode.ExtensionContext) {
         await fetch(`http://localhost:${port}/app`)
         connected = true
         break
-      } catch {}
+      } catch { }
 
       tries--
     } while (tries > 0)

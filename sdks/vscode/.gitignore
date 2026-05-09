@@ -1,1 +1,3 @@
-dist
+.vscode-test/
+dist/
+out/

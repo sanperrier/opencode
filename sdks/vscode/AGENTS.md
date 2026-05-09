@@ -20,8 +20,18 @@
 - Install deps from `sdks/vscode/`: `bun install`.
 - Verify changes from `sdks/vscode/`: `bun run check-types`, `bun run lint`, then `bun run compile`.
 - `bun run compile` runs typecheck, lint, and esbuild.
+- Run VS Code extension integration tests from `sdks/vscode/` with `bun run test`.
+- Do not use `bun test` for this package; tests are Mocha tests run inside VS Code Electron via `@vscode/test-cli`.
+- Test files live under `src/**/*.test.{ts,js}` and are loaded directly through `@oxc-node/core/register`; do not add a separate `out/test` compile step unless `.vscode-test.mjs` changes.
 - `bun run package` runs production/minified esbuild output.
-- Do not run `bun test` from the repo root; extension tests run from `sdks/vscode/` via `bun test`.
+
+## Testing Expectations
+
+- Main Orchestrator and iteration-lead should propose integration/e2e tests for each iteration that changes user-facing VS Code behavior.
+- Iteration specs/plans should include expected test coverage in acceptance criteria and validation targets.
+- focused-coder should add or update tests with implementation changes, preferring feature-level integration tests over placeholder or heavily mocked tests.
+- focused-coder should avoid arbitrary sleeps, `timeout(0)`, placeholder assertions, and duplicated implementation logic in tests.
+- focused-code-reviewer should verify tests cover the feature as a whole, are deterministic, run from `sdks/vscode`, and validate extension behavior through VS Code APIs where appropriate.
 
 ## Extension Shape
 
