@@ -41,6 +41,7 @@ suite("extension manifest contract", () => {
     assert.ok(container, `Expected Activity Bar View Container '${OPENCODE_CONTAINER_ID}'`);
     assert.equal(container.title, "opencode");
     assert.ok(container.icon, "Expected opencode View Container to declare an icon");
+    assert.ok(container.icon?.endsWith(".svg"), "Expected opencode View Container icon to use SVG");
   });
 
   test("contributes opencode view under dedicated container", () => {
