@@ -72,6 +72,27 @@
 - Fact: After focused-code-reviewer approves an implementation, the user must review it before phase 4; user rejection restarts the coder/reviewer loop, and direct user edits require lead review before more delegation.
 - Sources: [`../workflow/phase-3-implementation-review.md`](../workflow/phase-3-implementation-review.md), [`../workflow/iteration-overview.md`](../workflow/iteration-overview.md), [`../workflow/roles.md`](../workflow/roles.md)
 
+### E2E Test Intent Ownership
+
+- Trust: high
+- Last verified: 2026-05-11
+- Fact: E2E behavior intent is defined during phase 1 and turned into an executable test plan during phase 2; phase 3 may adjust only test mechanics unless the user approves a changed spec or plan.
+- Sources: [`../workflow/phase-1-spec.md`](../workflow/phase-1-spec.md), [`../workflow/phase-2-plan.md`](../workflow/phase-2-plan.md), [`../workflow/phase-3-implementation-review.md`](../workflow/phase-3-implementation-review.md), [`../workflow/iteration-overview.md`](../workflow/iteration-overview.md)
+
+### E2E And Contract Test Separation
+
+- Trust: high
+- Last verified: 2026-05-11
+- Fact: E2E tests should verify user-visible behavior, while non-user-visible technical requirements such as contribution shape belong in separately labeled contract tests.
+- Sources: [`../workflow.md`](../workflow.md), [`../workflow/phase-1-spec.md`](../workflow/phase-1-spec.md), [`../workflow/phase-2-plan.md`](../workflow/phase-2-plan.md)
+
+### Spawned Agent Context Budget
+
+- Trust: high
+- Last verified: 2026-05-11
+- Fact: Spawned agents should receive compact handoffs and read only the named profile, phase rules, artifact sections, knowledge groups, and files needed for their bounded task.
+- Sources: [`../workflow.md`](../workflow.md), [`../workflow/roles.md`](../workflow/roles.md), [`../workflow/phase-3-implementation-review.md`](../workflow/phase-3-implementation-review.md), [`../agents/README.md`](../agents/README.md)
+
 ### Locked Iteration Artifacts
 
 - Trust: high

@@ -4,11 +4,22 @@ This package uses an iteration-based workflow. Each iteration should be large en
 
 ## Read This First
 
-- All agents should read this file before using workflow details.
-- Agents should read only the detailed workflow files needed for their role.
+- Main orchestrator and iteration-lead should read this file before using workflow details.
+- Spawned agents should receive a compact handoff and read only the files explicitly listed in that handoff.
+- Agents should read only the detailed workflow files needed for their role and current phase.
 - Agents must not broaden their reading scope unless blocked or explicitly instructed.
 - Accepted specs and approved plans are locked/read-only.
 - Any change to locked iteration artifacts requires user approval.
+- E2E test intent is defined during phase 1 and made executable during phase 2.
+- E2E tests verify user-visible functionality; technical details belong in separately labeled contract tests.
+
+## Context Budget Rule
+
+- The main thread owns broad workflow continuity.
+- Handoffs should include the smallest sufficient context packet: goal, phase, artifact paths, owned files, relevant acceptance criteria, E2E intent, contract-test expectations, validation commands, and exact return format.
+- Do not ask focused-coder, focused-code-reviewer, or context-explorer to read all workflow docs.
+- Use `AGENTS/knowledge/index.md` as a router; read only the knowledge groups named by the handoff or needed to unblock the task.
+- Prefer file references and short excerpts in handoffs over asking spawned agents to rediscover stable context.
 
 ## Workflow Files
 
@@ -26,11 +37,11 @@ This package uses an iteration-based workflow. Each iteration should be large en
 
 | Role | Read |
 | --- | --- |
-| Main orchestrator | This file, overview, relevant phase docs, roles, escalation, current spec/plan |
-| iteration-lead | This file, overview, phase 1, phase 2, phase 3, phase 4, roles, escalation, output style, current spec/plan |
-| focused-coder | This file, phase 3, roles, approved `AGENTS/iterationX.spec.md`, approved `AGENTS/iterationX.plan.md`, relevant knowledge/code only |
-| focused-code-reviewer | This file, phase 3, roles, approved spec, approved plan, implementation summary, relevant diff/code only |
-| context-explorer | This file, roles, relevant knowledge/code only |
+| Main orchestrator | This file, overview, current phase doc, roles, current spec/plan, escalation/output style only when needed |
+| iteration-lead | This file, overview, current phase doc, roles, current spec/plan, escalation/output style only when needed |
+| focused-coder | Handoff packet, focused-coder profile, phase 3 rules, approved spec/plan sections named by handoff, relevant knowledge/code only |
+| focused-code-reviewer | Handoff packet, reviewer profile, phase 3 review rules, approved spec/plan sections named by handoff, implementation summary, relevant diff/code only |
+| context-explorer | Handoff question, context-explorer profile, specific files/knowledge named by handoff only |
 
 ## Iteration Artifacts
 
@@ -57,12 +68,15 @@ After user acceptance, `AGENTS/iterationX.spec.md` is read-only. After user appr
 Use this shape when delegating to a Codex worker or explorer:
 
 - Current iteration and phase.
-- Accepted spec path.
-- Approved plan path.
-- File or module ownership.
-- Allowed edits.
+- Accepted spec path, if one exists for the current phase.
+- Approved plan path, if one exists for the current phase.
+- File/module ownership, or bounded read-only question for explorers.
+- Allowed edits, or `read-only` for explorers.
 - Forbidden edits.
 - Validation commands.
+- E2E test intent and allowed mechanical adjustments.
+- Contract-test expectations, if any.
+- Relevant excerpts or section names to read.
 - Expected return format.
 
 Project-agent profiles in `AGENTS/agents/` are prompt templates, not executable agents. Include the relevant profile rules directly in the handoff.

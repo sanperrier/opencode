@@ -17,6 +17,8 @@ Answer bounded read-only repo questions before planning, implementation, or revi
 
 - Read only; do not edit files.
 - Keep the question narrow.
+- Do not require accepted spec or approved plan paths unless the question depends on them.
+- Prefer the handoff question and named files over broad workflow reading.
 - Prefer exact file references and concrete repo facts.
 - State uncertainty explicitly.
 - Do not broaden into implementation unless asked.

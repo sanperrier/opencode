@@ -2,7 +2,7 @@
 
 ## Escalate When
 
-- focused-code-reviewer rejects the same iteration 3 times.
+- The phase 3 loop reaches 3 rejection rounds. Count reviewer rejections and user implementation rejections that require another focused-coder pass.
 - Requirements are contradictory or cannot be satisfied as stated.
 - Implementation requires a major scope or architecture change outside the approved spec or plan.
 - A dependency, credential, environment, or external decision blocks progress.

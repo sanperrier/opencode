@@ -26,6 +26,13 @@ Iterations keep delivery controlled. Each iteration should produce a complete wo
 - `AGENTS/knowledge/` is updated after phase 4 when durable facts were learned.
 - Completed iteration specs and plans move to `AGENTS/archive/` after finalization.
 
+## Test Intent Ownership
+
+- Phase 1 defines E2E behavior scenarios as part of the spec.
+- Phase 2 turns those scenarios into an executable E2E test plan.
+- Phase 3 may adjust E2E mechanics for stability, but must not change what user-visible behavior the tests prove.
+- Technical constraints can have contract tests, but they should be tracked separately from E2E tests.
+
 ## State Transitions
 
 1. Draft spec becomes accepted spec only after user acceptance.

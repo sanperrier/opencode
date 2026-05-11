@@ -16,12 +16,15 @@ Codex currently exposes general subagent mechanics such as `worker` and `explore
 Every handoff should include:
 
 - current iteration and phase
-- accepted spec path
-- approved plan path
-- file/module ownership
-- allowed edits
+- accepted spec path, if one exists for the current phase
+- approved plan path, if one exists for the current phase
+- file/module ownership, or bounded read-only question for explorers
+- allowed edits, or `read-only` for explorers
 - forbidden edits
+- E2E test intent and allowed mechanical adjustments
+- contract-test expectations, if any
 - validation commands
+- relevant excerpts or section names to read
 - expected return format
 
 Do not assume a spawned subagent has read these files unless the handoff tells it exactly what to read and how to apply the profile.

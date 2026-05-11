@@ -11,9 +11,10 @@ This file is required for focused-coder, focused-code-reviewer, iteration-lead, 
 ## focused-coder Reading Scope
 
 - Read this file.
-- Read the approved `AGENTS/iterationX.spec.md`.
-- Read the approved `AGENTS/iterationX.plan.md`.
-- Read `AGENTS/knowledge/index.md`, then only relevant knowledge groups.
+- Read the focused-coder profile.
+- Read only the approved `AGENTS/iterationX.spec.md` sections named by the handoff.
+- Read only the approved `AGENTS/iterationX.plan.md` sections named by the handoff.
+- Read `AGENTS/knowledge/index.md` only when the handoff does not already name the required knowledge groups.
 - Read only code and docs needed to implement the approved plan.
 
 ## focused-coder Rules
@@ -22,14 +23,18 @@ This file is required for focused-coder, focused-code-reviewer, iteration-lead, 
 - Do not edit accepted specs or approved plans.
 - Do not broaden scope without escalation and user approval.
 - Keep changes minimal and aligned with the plan.
+- Add or update tests required by the plan.
+- Preserve the approved E2E test intent.
+- Adjust E2E test mechanics only when needed for stability or compatibility, and only when the observable behavior being tested stays the same.
 - Run the validation requested in the plan when feasible.
 - Return a concise implementation summary, changed files, validation performed, and any caveats.
 
 ## focused-code-reviewer Reading Scope
 
 - Read this file.
-- Read the approved `AGENTS/iterationX.spec.md`.
-- Read the approved `AGENTS/iterationX.plan.md`.
+- Read the focused-code-reviewer profile.
+- Read only the approved `AGENTS/iterationX.spec.md` sections named by the handoff.
+- Read only the approved `AGENTS/iterationX.plan.md` sections named by the handoff.
 - Read the focused-coder implementation summary.
 - Review the current iteration diff and relevant surrounding code only.
 
@@ -38,6 +43,8 @@ This file is required for focused-coder, focused-code-reviewer, iteration-lead, 
 - Review only current iteration changes unless explicitly instructed otherwise.
 - Check correctness, regressions, missed edge cases, integration risks, maintainability, security risks, and validation gaps.
 - Verify alignment with the accepted spec and approved plan.
+- Verify that E2E tests still test user-visible functionality rather than implementation details.
+- Treat changed E2E intent as a plan/spec change, not a normal implementation edit.
 - Do not edit accepted specs or approved plans.
 - Return a pass/fail decision.
 - Group findings by severity.

@@ -33,7 +33,8 @@ This iteration proves the extension can contribute a supported movable workbench
   - `opencode.openTerminal`
   - `opencode.openNewTerminal`
   - `opencode.addFilepathToTerminal`
-- Add automated tests that enforce the manifest contribution contract instead of leaving those assertions commented out.
+- Define E2E behavior tests for user-visible activation, command availability, view availability, and readiness behavior.
+- Add separate automated contract tests that enforce the manifest contribution contract instead of leaving those assertions commented out.
 - Document manual validation for view placement/movement behavior that is not reliably covered by VS Code test APIs.
 
 ## Scope Excluded
@@ -69,7 +70,8 @@ This iteration proves the extension can contribute a supported movable workbench
   - `opencode.addFilepathToTerminal`
 - Existing terminal launch and file-reference insertion behavior remain unchanged.
 - No web client embedding, session sync, custom terminal container, or unsupported terminal placement workaround is introduced.
-- Automated tests enforce the dedicated container/view contract.
+- E2E tests verify user-visible behavior without asserting internal implementation details.
+- Contract tests enforce the dedicated container/view manifest contract.
 - Manual validation notes cover Secondary Side Bar/Panel movement and visible readiness content.
 
 ## Validation Expectations
@@ -81,14 +83,26 @@ Run from `sdks/vscode`:
 - `bun run compile`
 - `bun run test`
 
-Automated tests should verify:
+## E2E Behavior Scenarios
 
-- Extension activation succeeds in the VS Code test host.
-- Existing command IDs remain registered.
+The E2E tests for this iteration should verify functionality that a user or VS Code host can observe:
+
+- The extension activates successfully in the VS Code test host.
+- The existing opencode commands are available and can be invoked through supported VS Code behavior.
+- The opencode view can be opened or revealed through supported VS Code behavior.
+- The opencode view exposes readiness behavior with exact marker `opencode view ready` through stable observable behavior.
+
+E2E tests should not assert the raw `package.json` contribution shape, internal provider implementation, helper names, file layout, or other technical details. If stable APIs cannot observe a behavior reliably, capture it as manual validation instead of encoding a brittle E2E assertion.
+
+## Contract Test Expectations
+
+Contract tests should verify non-user-visible technical requirements that are still part of the accepted spec:
+
 - Manifest includes `viewsContainers.activitybar` container ID `opencode`.
 - Manifest includes `views.opencode` view ID `opencode.view`.
 - Manifest includes `viewsWelcome` content for `opencode.view` containing `opencode view ready`.
-- Provider/readiness behavior is checked only through stable VS Code APIs; avoid arbitrary sleeps where practical.
+
+Contract tests must remain separate from E2E tests so implementation details do not leak into user-behavior coverage.
 
 Manual validation should confirm:
 

@@ -33,6 +33,8 @@ Example: `Please approve AGENTS/iteration1.spec.md to lock the spec and allow ph
 - Approved spec and plan paths.
 - Goal and acceptance criteria summary.
 - Relevant constraints and exclusions.
+- E2E test intent and any allowed mechanical adjustments.
+- Contract-test expectations, if any.
 - Expected output from the receiving agent.
 - Validation or review expectations.
 
@@ -42,6 +44,8 @@ Example: `Please approve AGENTS/iteration1.spec.md to lock the spec and allow ph
 - Findings by severity.
 - Required fixes.
 - Validation performed or missing.
+- Whether E2E tests preserve user-visible intent.
+- Whether contract tests are separated from E2E tests.
 - Residual risks.
 
 ## User Implementation Review Format

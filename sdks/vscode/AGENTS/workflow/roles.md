@@ -14,6 +14,8 @@
 
 - Runs discovery and planning mode for broad or multi-step work.
 - Creates accepted specs and approved plans with user approval.
+- Defines E2E behavior intent in phase 1 and executable E2E test planning in phase 2.
+- Keeps technical contract tests separate from E2E tests.
 - Orchestrates focused-coder and focused-code-reviewer during implementation.
 - Enforces the 3-rejection review limit.
 - Presents reviewer-approved implementation to the user for approval before phase 4.
@@ -26,8 +28,9 @@
 ## focused-coder
 
 - Implements only the approved iteration.
-- Reads phase 3, the accepted spec, the approved plan, and relevant knowledge/code.
+- Reads the handoff packet, focused-coder profile, phase 3 rules, named sections of the accepted spec and approved plan, and relevant knowledge/code.
 - Does not edit accepted specs or approved plans.
+- Preserves approved E2E test intent and only adjusts mechanics when necessary.
 - Escalates when implementation requires scope, acceptance criteria, architecture, or validation changes.
 - Returns changed files, summary, validation, and caveats.
 - Codex mapping: spawned `worker` with explicit file/module ownership and `AGENTS/agents/focused-coder.md` included in the handoff.
@@ -35,8 +38,9 @@
 ## focused-code-reviewer
 
 - Reviews recently implemented current-iteration changes.
-- Reads phase 3, the accepted spec, the approved plan, the implementation summary, and relevant diff/code.
+- Reads the handoff packet, reviewer profile, phase 3 review rules, named sections of the accepted spec and approved plan, the implementation summary, and relevant diff/code.
 - Does not edit accepted specs or approved plans.
+- Confirms E2E tests remain user-behavior tests and contract tests remain separate.
 - Returns pass/fail, severity-grouped findings, required fixes, and validation concerns.
 - Reviewer approval is necessary but not sufficient for phase 4; user implementation approval is also required.
 - Codex mapping: main-thread review or spawned read-only `explorer` using `AGENTS/agents/focused-code-reviewer.md` as the review profile.
@@ -61,8 +65,8 @@
 
 | Role | Should Read | Should Not Read By Default |
 | --- | --- | --- |
-| Main orchestrator | `AGENTS/workflow.md`, relevant phase docs, current spec/plan | Unrelated knowledge groups or broad code areas |
-| iteration-lead | Overview, phase 1, phase 2, phase 4, roles, escalation, output style | Deep implementation code unless planning requires it |
-| focused-coder | Phase 3, accepted spec, approved plan, relevant knowledge/code | Phase 1/2 process docs, unrelated knowledge groups, broad codebase |
-| focused-code-reviewer | Phase 3, accepted spec, approved plan, implementation summary, relevant diff/code | Phase 1/2 process docs, unrelated code or old iterations |
+| Main orchestrator | `AGENTS/workflow.md`, current phase doc, roles, current spec/plan | Unrelated knowledge groups or broad code areas |
+| iteration-lead | `AGENTS/workflow.md`, overview, current phase doc, roles, current spec/plan, escalation/output style when needed | Deep implementation code unless planning requires it |
+| focused-coder | Handoff packet, focused-coder profile, phase 3 rules, named spec/plan sections, relevant knowledge/code | Phase 1/2 process docs, unrelated knowledge groups, broad codebase |
+| focused-code-reviewer | Handoff packet, reviewer profile, phase 3 review rules, named spec/plan sections, implementation summary, relevant diff/code | Phase 1/2 process docs, unrelated code or old iterations |
 | context-explorer | Specific files, knowledge groups, and code needed to answer the assigned question | Unrelated code, implementation edits, workflow artifacts not needed for the question |
