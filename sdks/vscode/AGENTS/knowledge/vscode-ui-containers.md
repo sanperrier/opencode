@@ -51,12 +51,12 @@
 - Fact: Webviews can appear as editor panels, custom editors, or Webview Views rendered in side bar/panel areas. Webview HTML should be a complete document, use restrictive CSP, avoid scripts unless needed, and use VS Code theme CSS variables for native-feeling UI.
 - Sources: VS Code Webview guide, `https://code.visualstudio.com/api/extension-guides/webview`
 
-### Iteration 1 Current Partial State
+### Iteration 1 Container Baseline
 
 - Trust: high
 - Last verified: 2026-05-11
-- Fact: Iteration 1 is reopened because the current implementation contributes `opencode.view` under built-in `explorer`, not a dedicated `opencode` View Container; the readiness marker exists, but the dedicated container contract is not implemented or enforced by active tests.
-- Sources: [`../../package.json`](../../package.json), [`../../src/extension.ts`](../../src/extension.ts), [`../../src/extension.test.ts`](../../src/extension.test.ts), [`../iteration1.spec.md`](../iteration1.spec.md)
+- Fact: Iteration 1 finalized the dedicated `opencode` View Container baseline: `opencode.view` is contributed under `views.opencode`, the readiness marker is `opencode view ready`, and manifest/E2E tests enforce the baseline.
+- Sources: [`../../package.json`](../../package.json), [`../../src/extension.ts`](../../src/extension.ts), [`../../src/extension.test.ts`](../../src/extension.test.ts), [`../archive/iteration1.spec.md`](../archive/iteration1.spec.md)
 
 ### VS Code Test Extension Install Directory
 
