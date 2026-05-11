@@ -12,7 +12,8 @@ This file is primarily for iteration-lead and the main orchestrator.
 
 - focused-coder completed implementation.
 - focused-code-reviewer approved the implementation.
-- Review rejection count is below the escalation limit.
+- The user approved the reviewed implementation after phase 3 user implementation review.
+- Phase 3 rejection count is below the escalation limit.
 
 ## Lead-Level Review
 
@@ -31,8 +32,8 @@ Present the iteration result to the user with completed work, validation perform
 - Update `AGENTS/plan.md` when the global goal, current understanding, next steps, open questions, or verification targets changed.
 - Update `AGENTS/knowledge/` only for durable facts likely to prevent future agents from re-reading broad context.
 - Add new knowledge groups to `AGENTS/knowledge/index.md`.
-- Every knowledge fact must include trust score and source links.
+- Every knowledge fact must include trust, `Last verified`, one concrete claim, and source links.
 
 ## Completion Rule
 
-An iteration is complete only after reviewer approval, lead-level finalization, user presentation, and any relevant plan or knowledge updates.
+An iteration is complete only after reviewer approval, user implementation approval, lead-level finalization, user presentation, and any relevant plan or knowledge updates.

@@ -24,6 +24,7 @@ Iterations keep delivery controlled. Each iteration should produce a complete wo
 - `AGENTS/iterationX.plan.md` is created during phase 2.
 - `AGENTS/plan.md` is updated after phase 4 when the global plan changes.
 - `AGENTS/knowledge/` is updated after phase 4 when durable facts were learned.
+- Completed iteration specs and plans move to `AGENTS/archive/` after finalization.
 
 ## State Transitions
 
@@ -31,8 +32,18 @@ Iterations keep delivery controlled. Each iteration should produce a complete wo
 2. Accepted spec unlocks phase 2 planning.
 3. Draft plan becomes approved plan only after user approval.
 4. Approved plan unlocks phase 3 implementation.
-5. Reviewer approval unlocks phase 4 finalization.
-6. User review completes the iteration and allows the next iteration to begin.
+5. focused-coder implementation goes to focused-code-reviewer.
+6. Reviewer approval unlocks user implementation review.
+7. User implementation approval unlocks phase 4 finalization.
+8. Phase 4 user review completes the iteration and allows the next iteration to begin.
+
+## User Intervention During Phase 3
+
+The user remains inside the implementation loop. After reviewer approval, the implementation is presented to the user before finalization. The user can approve it, reject it with explanation, or edit files directly.
+
+- User approval allows phase 4 finalization.
+- User rejection restarts the focused-coder to focused-code-reviewer loop with the user's explanation as required feedback.
+- User edits require lead/main-thread review before more delegation. The lead summarizes the edits, preserves them, and adjusts the next handoff. If the edits require a material plan or spec change, return to phase 2 or phase 1 respectively.
 
 ## Reset Rule
 

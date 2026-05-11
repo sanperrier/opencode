@@ -9,6 +9,8 @@ Use explicit state labels when coordinating iterations.
 - Implementing
 - Reviewing
 - Fixing
+- Awaiting User Implementation Review
+- Reviewing User Changes
 - Escalated
 - Iteration Finalization
 
@@ -41,6 +43,22 @@ Example: `Please approve AGENTS/iteration1.spec.md to lock the spec and allow ph
 - Required fixes.
 - Validation performed or missing.
 - Residual risks.
+
+## User Implementation Review Format
+
+- What changed.
+- Reviewer verdict.
+- Validation performed.
+- Caveats or residual risks.
+- User decision needed: approve, reject with explanation, or state that you edited files directly.
+
+## User Change Review Format
+
+- Files changed by the user.
+- Behavioral or scope impact.
+- Whether changes fit the accepted spec and approved plan.
+- Required plan/spec updates, if any.
+- Next focused-coder handoff adjustments.
 
 ## Finalization Summary Format
 

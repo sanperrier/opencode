@@ -8,12 +8,16 @@
 
 ## Agent Working Area
 
+- Treat this file as the package entrypoint for local agent instructions. Do not rely on `AGENTS.override.md`; short-lived task context belongs in the conversation, active project direction belongs in `AGENTS/plan.md`, and durable facts belong in `AGENTS/knowledge/`.
 - Use `AGENTS/plan.md` for the current goal, plan, open questions, and verification targets.
 - Use `AGENTS/knowledge/` as the scoped knowledge base. Start with `AGENTS/knowledge/index.md`, then read only the fact groups relevant to the current task.
 - Use `AGENTS/workflow.md` to discover the iteration workflow. Read only the linked workflow files relevant to your role and current phase.
+- Use `AGENTS/agents/` for Codex project-agent handoff profiles. These are prompt templates, not executable custom agents.
+- Use `AGENTS/archive/` for completed iteration specs and plans; active iteration artifacts belong in the `AGENTS/` root only while the iteration is current.
 - Iterations follow 4 phases: accepted spec, approved plan, focused implementation/review loop with up to 3 rejection rounds, then lead finalization with user review and plan/knowledge updates.
-- Every stored fact should include a trust score (`low`, `medium`, `high`) and source links to code, docs, tests, or live observations.
+- Every stored fact should include trust (`low`, `medium`, `high`), `Last verified`, one concrete claim, and source links to code, docs, tests, commands, or live observations.
 - Add or update knowledge when a fact is likely to prevent future agents from re-reading broad context; keep groups focused by domain.
+- Do not store current task TODOs, unapproved plans, conversation preferences, or long copied documentation in `AGENTS/knowledge/`.
 
 ## Commands
 
