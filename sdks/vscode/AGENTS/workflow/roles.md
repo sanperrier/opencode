@@ -33,7 +33,7 @@
 - Preserves approved E2E test intent and only adjusts mechanics when necessary.
 - Escalates when implementation requires scope, acceptance criteria, architecture, or validation changes.
 - Returns changed files, summary, validation, and caveats.
-- Codex mapping: spawned `worker` with explicit file/module ownership and `AGENTS/agents/focused-coder.md` included in the handoff.
+- Codex mapping: spawned `worker` using `gpt-5.4-mini`, with explicit file/module ownership and `AGENTS/agents/focused-coder.md` included in the handoff.
 
 ## focused-code-reviewer
 
@@ -43,7 +43,7 @@
 - Confirms E2E tests remain user-behavior tests and contract tests remain separate.
 - Returns pass/fail, severity-grouped findings, required fixes, and validation concerns.
 - Reviewer approval is necessary but not sufficient for phase 4; user implementation approval is also required.
-- Codex mapping: main-thread review or spawned read-only `explorer` using `AGENTS/agents/focused-code-reviewer.md` as the review profile.
+- Codex mapping: spawned read-only `explorer` using `gpt-5.3-codex` and `AGENTS/agents/focused-code-reviewer.md` as the review profile.
 
 ## context-explorer
 

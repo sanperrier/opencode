@@ -28,7 +28,7 @@ async function main() {
   const ctx = await esbuild.context({
     entryPoints: [
       "src/extension.ts",
-      ...(test ? ["src/*.test.ts"] : [])
+      ...(test ? ["src/**/*.test.ts"] : [])
     ],
     outdir: "dist",
     bundle: true,

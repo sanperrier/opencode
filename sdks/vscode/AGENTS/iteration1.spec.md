@@ -2,9 +2,9 @@
 
 ## Approval Status
 
-Status: Draft / reopened for Phase 1 on 2026-05-11.
+Status: Accepted / locked on 2026-05-11.
 
-This spec is not accepted or locked. The previous Iteration 1 artifact was reopened because the current implementation does not satisfy the dedicated `opencode` View Container contract.
+The user accepted this reopened Iteration 1 scope on 2026-05-11. The previous Iteration 1 artifact was reopened because the current implementation does not satisfy the dedicated `opencode` View Container contract.
 
 ## Current Implementation State
 
