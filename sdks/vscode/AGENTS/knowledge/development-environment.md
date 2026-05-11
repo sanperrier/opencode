@@ -48,7 +48,7 @@
 
 - Trust: high
 - Last verified: 2026-05-11
-- Fact: `bun run check-types`, `bun run lint`, `bun run compile`, and `bun run test` passed from `sdks/vscode` with escalated filesystem access; lint still reported 48 semicolon warnings in `src/extension.ts`.
+- Fact: `bun run check-types`, `bun run lint`, `bun run compile`, and `bun run test` passed from `sdks/vscode`; `bun run test` reported 6 passing tests, and lint still reported 48 semicolon warnings in `src/extension.ts`.
 - Sources: Live commands run 2026-05-11: `bun run check-types`, `bun run lint`, `bun run compile`, `bun run test`
 
 ### Test Configuration Status

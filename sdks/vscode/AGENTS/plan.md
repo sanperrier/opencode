@@ -14,29 +14,31 @@ Keep the native VS Code terminal as the fast primary opencode workflow, while ad
 - VS Code public APIs do not expose a second native Terminal container or a way to move one native terminal tab into the Secondary Sidebar.
 - The web client can open the same backend session by direct URL, but may feel sluggish and may have sidebar/session-list sync issues.
 - A hybrid approach is likely best: keep the terminal path as primary, and prototype a webview-based opencode surface for Secondary Sidebar usage.
-- Iteration 1 is reopened in Phase 1. The current implementation is partial: it contributes `opencode.view` under the built-in Explorer view, not under a dedicated `opencode` View Container, so it does not satisfy the intended container contract yet.
+- Iteration 1 spec and plan are accepted/approved as of 2026-05-11.
+- Iteration 1 implementation is present in the current branch: `package.json` contributes a dedicated `opencode` View Container, `opencode.view` now lives under `views.opencode`, readiness content remains `opencode view ready`, and manifest/E2E tests cover the baseline.
+- The implementation is ready for validation and finalization review.
 
 ## Near-Term Plan
 
-1. Reopen Iteration 1 from Phase 1 and get the revised spec accepted.
-2. Create a new approved Iteration 1 implementation plan from the accepted spec.
-3. Finish the dedicated opencode View Container/View contribution and enforce it with tests.
-4. Keep current native terminal commands intact while adding the optional container/view surface.
-5. Prototype web client embedding only after the sidebar contribution shell is validated.
+1. Validate the current Iteration 1 implementation from `sdks/vscode`.
+2. Perform lead-level finalization review against the accepted spec and approved plan.
+3. Present Iteration 1 for user finalization review.
+4. After user finalization approval, update durable knowledge if needed and move to Iteration 2 planning.
+5. Prototype web client embedding only after the sidebar contribution shell is validated and finalized.
 
 ## Next Session Entry
 
-- Start with `AGENTS.md`, then read `AGENTS/workflow.md`, `AGENTS/workflow/phase-1-spec.md`, `AGENTS/iteration1.spec.md`, and the relevant knowledge index.
-- Do not implement Iteration 1 yet. The active spec is still `Draft / reopened for Phase 1` and must be accepted before Phase 2 planning.
-- After spec acceptance, create a replacement `AGENTS/iteration1.plan.md`; the current plan is invalidated reference material only.
+- Start with `AGENTS.md`, then read `AGENTS/workflow.md`, `AGENTS/workflow/phase-4-finalization.md`, `AGENTS/iteration1.spec.md`, `AGENTS/iteration1.plan.md`, and the relevant knowledge index.
+- Iteration 1 implementation is present and should be validated/finalized, not replanned, unless the user changes scope.
+- Do not move to Iteration 2 implementation until Iteration 1 finalization review is complete.
 
 ## Proposed Iterations
 
 ### Iteration 1: Movable UI Container Baseline
 
-- Status: Reopened / Phase 1 draft; previous plan invalidated.
+- Status: Implemented / validation passed / pending user finalization review.
 - Goal: Add a minimal opencode-contributed View Container plus View that can be moved to the Secondary Side Bar or Panel through supported VS Code layout behavior.
-- Current state: `opencode.view` exists under `views.explorer`; dedicated `viewsContainers.activitybar` container ID `opencode` is missing; manifest contract test is commented out.
+- Current state: `opencode.view` is contributed under dedicated `views.opencode`; dedicated `viewsContainers.activitybar` container ID `opencode` exists; manifest contract tests and E2E-style tests are present.
 - Included: dedicated contribution/container shape, view naming, minimal readiness/placeholder surface, unchanged terminal behavior, documented distinction between moving the built-in Terminal view/container and moving one terminal instance.
 - Excluded: full embedded web client, session sync, custom CSS system, native terminal replacement.
 - User-testable outcome: the opencode container/view appears in VS Code, can be moved using layout controls, and existing terminal commands still work.
@@ -83,4 +85,4 @@ Keep the native VS Code terminal as the fast primary opencode workflow, while ad
 
 - Run from `sdks/vscode/`: `bun run check-types`, `bun run lint`, then `bun run compile`.
 - Manually verify in the Extension Development Host with `code sdks/vscode` and `Developer: Reload Window` after rebuilds.
-- Current 2026-05-11 checks passed with escalated filesystem access: `bun run check-types`, `bun run lint`, `bun run compile`, and `bun run test`; lint still reports 48 semicolon warnings in `src/extension.ts`.
+- Current 2026-05-11 checks passed from `sdks/vscode`: `bun run check-types`, `bun run lint`, `bun run compile`, and `bun run test`; `bun run test` reported 6 passing tests. Lint still reports 48 semicolon warnings in `src/extension.ts`.
