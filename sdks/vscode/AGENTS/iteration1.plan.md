@@ -2,7 +2,7 @@
 
 ## Approval Status
 
-Status: Draft, awaiting user approval before implementation.
+Status: Approved by user; locked for Iteration 1 implementation.
 
 ## Spec
 

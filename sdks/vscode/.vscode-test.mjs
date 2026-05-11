@@ -1,10 +1,14 @@
 import { defineConfig } from "@vscode/test-cli"
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-export default defineConfig({
-  files: "src/**/*.test.{js,ts}",
-  mocha: {
-    nodeOptions: ["--import @oxc-node/core/register"],
-  }
-})
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-
+export default defineConfig([{
+  label: 'tests',
+  files: "dist/**/!(manual).test.js"
+}, {
+  label: 'manual',
+  files: "dist/manual.test.js"
+}]);

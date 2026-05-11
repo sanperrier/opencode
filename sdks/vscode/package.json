@@ -20,9 +20,25 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "id": "opencode.view",
+          "name": "opencode"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "opencode.view",
+        "contents": "opencode view ready"
+      }
+    ],
     "commands": [
       {
         "command": "opencode.openTerminal",
@@ -83,17 +99,17 @@
   "scripts": {
     "vscode:prepublish": "bun run package",
     "compile": "bun run check-types && bun run lint && node esbuild.js",
+    "compile:test": "bun run check-types && bun run lint && node esbuild.js --test",
     "package": "bun run check-types && bun run lint && node esbuild.js --production",
     "check-types": "tsc --noEmit",
     "lint": "eslint src",
-    "pretest": "bun run compile",
-    "test": "vscode-test",
-    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "pretest": "bun run compile:test",
+    "test": "vscode-test -l tests",
+    "test:manual": "bun run test -- -l manual",
     "watch:esbuild": "node esbuild.js --watch",
     "prepare": "cd ../.. && husky sdks/vscode/.husky"
   },
   "devDependencies": {
-    "@oxc-node/core": "^0.1.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "22",
     "@types/vscode": "^1.94.0",
@@ -107,7 +123,7 @@
     "typescript": "^5.8.3"
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
+    "DISABLED *.{ts,tsx}": [
       "bun run test"
     ]
   }

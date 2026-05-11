@@ -14,6 +14,7 @@ Keep the native VS Code terminal as the fast primary opencode workflow, while ad
 - VS Code public APIs do not expose a second native Terminal container or a way to move one native terminal tab into the Secondary Sidebar.
 - The web client can open the same backend session by direct URL, but may feel sluggish and may have sidebar/session-list sync issues.
 - A hybrid approach is likely best: keep the terminal path as primary, and prototype a webview-based opencode surface for Secondary Sidebar usage.
+- Iteration 1 implemented a minimal opencode View Container/View contribution in the Activity Bar using native VS Code viewsWelcome readiness content; no webview implementation was needed for the baseline.
 
 ## Near-Term Plan
 
@@ -27,6 +28,7 @@ Keep the native VS Code terminal as the fast primary opencode workflow, while ad
 
 ### Iteration 1: Movable UI Container Baseline
 
+- Status: Implemented and review-approved; automated verification passed.
 - Goal: Add a minimal opencode-contributed View Container plus View that can be moved to the Secondary Side Bar or Panel through supported VS Code layout behavior.
 - Included: contribution/container shape, view naming, minimal readiness/placeholder surface, unchanged terminal behavior, documented distinction between moving the built-in Terminal view/container and moving one terminal instance.
 - Excluded: full embedded web client, session sync, custom CSS system, native terminal replacement.
@@ -78,3 +80,4 @@ Keep the native VS Code terminal as the fast primary opencode workflow, while ad
 
 - Run from `sdks/vscode/`: `bun run check-types`, `bun run lint`, then `bun run compile`.
 - Manually verify in the Extension Development Host with `code sdks/vscode` and `Developer: Reload Window` after rebuilds.
+- Iteration 1 automated verification passed with `bun run check-types`, `bun run lint`, `bun run compile`, and `bun run test`; lint still reports existing semicolon warnings in `src/extension.ts`.

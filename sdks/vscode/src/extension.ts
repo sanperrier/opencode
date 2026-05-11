@@ -1,11 +1,18 @@
 // This method is called when your extension is deactivated
 export function deactivate() { }
 
-import * as vscode from "vscode"
+import * as vscode from "vscode";
+import { OPENCODE_VIEW_ID } from "./config";
 
 const TERMINAL_NAME = "opencode"
 
 export function activate(context: vscode.ExtensionContext) {
+  const opencodeViewProvider = new OpencodeViewProvider();
+  const opencodeViewDisposable = vscode.window.registerTreeDataProvider(OPENCODE_VIEW_ID, opencodeViewProvider);
+  const view = vscode.window.createTreeView(OPENCODE_VIEW_ID, {
+    treeDataProvider: opencodeViewProvider,
+  })
+
   const openNewTerminalDisposable = vscode.commands.registerCommand("opencode.openNewTerminal", async () => {
     await openTerminal()
   })
@@ -40,7 +47,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
   })
 
-  context.subscriptions.push(openNewTerminalDisposable, openTerminalDisposable, addFilepathDisposable)
+  context.subscriptions.push(opencodeViewDisposable, openNewTerminalDisposable, openTerminalDisposable, addFilepathDisposable)
 
   async function openTerminal() {
     // Create a new terminal in split screen
@@ -134,4 +141,36 @@ export function activate(context: vscode.ExtensionContext) {
 
     return filepathWithAt
   }
+
+  return {
+    viewProvider: {
+      getTreeItemCalled: () => opencodeViewProvider.getTreeItemCalled,
+      getChildrenCalled: () => opencodeViewProvider.getChildrenCalled,
+    }
+  };
+}
+
+class OpencodeViewProvider implements vscode.TreeDataProvider<never> {
+  public get getTreeItemCalled() {
+    return this._getTreeItemCalled;
+  }
+
+  public get getChildrenCalled() {
+    return this._getChildrenCalled;
+  }
+
+  getTreeItem(element: never) {
+    this._getTreeItemCalled++;
+    console.log("getTreeItem called", this._getTreeItemCalled);
+    return element;
+  }
+
+  getChildren() {
+    this._getChildrenCalled++;
+    console.log("getChildren called", this._getChildrenCalled);
+    return [];
+  }
+
+  private _getTreeItemCalled = 0;
+  private _getChildrenCalled = 0;
 }

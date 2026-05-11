@@ -1,5 +1,8 @@
 .vscode/**
 .vscode-test/**
+.husky/
+AGENTS/
+AGENTS*
 out/**
 node_modules/**
 src/**
@@ -14,3 +17,4 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 **/.vscode-test.*
+dist/**/*.test.js

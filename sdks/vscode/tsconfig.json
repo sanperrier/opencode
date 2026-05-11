@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "module": "Node16",
+    "module": "es2015",
     "target": "ES2022",
     "lib": ["ES2022", "DOM"],
+    "moduleResolution": "bundler",
     "sourceMap": true,
     "rootDir": "src",
     "strict": true /* enable all strict type-checking options */,

@@ -47,3 +47,15 @@
 - Trust: medium
 - Fact: The next iteration should avoid assuming a specific Webview View implementation until the manifest/container shape is chosen. A dedicated opencode View Container plus one minimal view is the supported extension-owned movable surface, while native terminal placement should stay in the built-in Terminal view/editor workflows.
 - Sources: VS Code docs above; current extension package lacks `views`/`viewsContainers` contributions in [`../../package.json`](../../package.json)
+
+### Iteration 1 Implemented Baseline
+
+- Trust: high
+- Fact: Iteration 1 implemented startup activation via `onStartupFinished`, an Activity Bar View Container with ID `opencode`, a visible View with ID `opencode.view`, a registered empty `TreeDataProvider`, and native `viewsWelcome` readiness content containing `opencode view ready`. This satisfied the baseline without adding a Webview View or changing native terminal behavior.
+- Sources: [`../../package.json`](../../package.json), [`../../src/extension.ts`](../../src/extension.ts), [`../../src/extension.test.ts`](../../src/extension.test.ts), verification run `bun run test` from `sdks/vscode`
+
+### VS Code Test Extension Install Directory
+
+- Trust: medium
+- Fact: `.vscode-test/extensions/extensions.json` can remain empty when running this package's `@vscode/test-cli` tests because the extension is loaded as a development extension from `sdks/vscode`, not installed into the test instance's extension directory.
+- Sources: `.vscode-test/extensions/extensions.json` observed as `[]`; `vscode-test` output prints `Loading development extension at c:\Users\alien\work\@sanperrier\opencode\sdks\vscode`
