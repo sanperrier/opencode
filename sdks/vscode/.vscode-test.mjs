@@ -7,8 +7,10 @@ const __dirname = path.dirname(__filename);
 
 export default defineConfig([{
   label: 'tests',
-  files: "dist/**/!(manual).test.js"
+  files: "dist/**/!(manual).test.js",
+  workspaceFolder: '.vscode-test/test-workspace'
 }, {
   label: 'manual',
-  files: "dist/manual.test.js"
+  files: "dist/manual.test.js",
+  workspaceFolder: '.vscode-test/test-workspace'
 }]);
