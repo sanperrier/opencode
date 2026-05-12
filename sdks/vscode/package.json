@@ -38,16 +38,11 @@
       "opencode": [
         {
           "id": "opencode.view",
-          "name": "opencode"
+          "name": "opencode",
+          "type": "webview"
         }
       ]
     },
-    "viewsWelcome": [
-      {
-        "view": "opencode.view",
-        "contents": "opencode view ready"
-      }
-    ],
     "commands": [
       {
         "command": "opencode.openTerminal",
@@ -129,6 +124,7 @@
     "esbuild": "^0.25.3",
     "eslint": "^9.25.1",
     "lint-staged": "^17.0.3",
+    "oxfmt": "^0.48.0",
     "typescript": "^5.8.3"
   },
   "lint-staged": {

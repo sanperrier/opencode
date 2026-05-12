@@ -4,7 +4,6 @@ import packageJson from "../package.json";
 import { OPENCODE_VIEW_ID } from "./config";
 
 const OPENCODE_CONTAINER_ID = "opencode";
-const OPENCODE_VIEW_READY_MARKER = "opencode view ready";
 
 type ViewContainer = {
   id?: string;
@@ -15,11 +14,7 @@ type ViewContainer = {
 type View = {
   id?: string;
   name?: string;
-};
-
-type ViewWelcome = {
-  view?: string;
-  contents?: string;
+  type?: string;
 };
 
 type ExtensionPackage = {
@@ -28,7 +23,6 @@ type ExtensionPackage = {
       activitybar?: ViewContainer[];
     };
     views?: Record<string, View[] | undefined>;
-    viewsWelcome?: ViewWelcome[];
   };
 };
 
@@ -51,6 +45,7 @@ suite("extension manifest contract", () => {
 
     assert.ok(view, `Expected opencode View '${OPENCODE_VIEW_ID}' under '${OPENCODE_CONTAINER_ID}'`);
     assert.equal(view.name, "opencode");
+    assert.equal(view.type, "webview");
   });
 
   test("does not contribute opencode view only under explorer", () => {
@@ -61,14 +56,6 @@ suite("extension manifest contract", () => {
     assert.equal(explorerView, undefined);
   });
 
-  test("declares opencode view readiness welcome content", () => {
-    const welcome = getPackageJSON().contributes?.viewsWelcome?.find(
-      (item) => item.view === OPENCODE_VIEW_ID,
-    );
-
-    assert.ok(welcome, `Expected viewsWelcome content for '${OPENCODE_VIEW_ID}'`);
-    assert.ok(welcome.contents?.includes(OPENCODE_VIEW_READY_MARKER));
-  });
 });
 
 function getPackageJSON() {

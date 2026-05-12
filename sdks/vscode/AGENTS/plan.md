@@ -14,29 +14,30 @@ Keep the native VS Code terminal as the fast primary opencode workflow, while ad
 - VS Code public APIs do not expose a second native Terminal container or a way to move one native terminal tab into the Secondary Sidebar.
 - The web client can open the same backend session by direct URL, but may feel sluggish and may have sidebar/session-list sync issues.
 - A hybrid approach is likely best: keep the terminal path as primary, and prototype a webview-based opencode surface for Secondary Sidebar usage.
-- Iteration 1 spec and plan are accepted/approved as of 2026-05-11.
-- Iteration 1 implementation is present in the current branch: `package.json` contributes a dedicated `opencode` View Container, `opencode.view` now lives under `views.opencode`, readiness content remains `opencode view ready`, and manifest/E2E tests cover the baseline.
-- The implementation is ready for validation and finalization review.
+- Iteration 1 is finalized as of 2026-05-11. The completed spec and plan are archived under `AGENTS/archive/`.
+- The current branch contributes a dedicated `opencode` View Container, places `opencode.view` under `views.opencode`, keeps readiness content as `opencode view ready`, and has manifest/E2E tests covering the baseline.
+- Iteration 2 spec and plan are accepted/approved as of 2026-05-11.
+- Iteration 2 is in Phase 3 implementation/review and focuses on a terminal-driven webview alternative for extension-created opencode terminals.
 
 ## Near-Term Plan
 
-1. Validate the current Iteration 1 implementation from `sdks/vscode`.
-2. Perform lead-level finalization review against the accepted spec and approved plan.
-3. Present Iteration 1 for user finalization review.
-4. After user finalization approval, update durable knowledge if needed and move to Iteration 2 planning.
-5. Prototype web client embedding only after the sidebar contribution shell is validated and finalized.
+1. Implement Iteration 2 through the focused-coder / focused-code-reviewer loop.
+2. Replace the placeholder Tree View with a terminal-driven `WebviewViewProvider`.
+3. Preserve native terminal commands as the fast fallback path and source of truth.
+4. Validate with `bun run check-types`, `bun run lint`, `bun run compile`, and `bun run test`.
+5. Present reviewed implementation for user implementation approval before finalization.
 
 ## Next Session Entry
 
-- Start with `AGENTS.md`, then read `AGENTS/workflow.md`, `AGENTS/workflow/phase-4-finalization.md`, `AGENTS/iteration1.spec.md`, `AGENTS/iteration1.plan.md`, and the relevant knowledge index.
-- Iteration 1 implementation is present and should be validated/finalized, not replanned, unless the user changes scope.
-- Do not move to Iteration 2 implementation until Iteration 1 finalization review is complete.
+- Start with `AGENTS.md`, then read `AGENTS/workflow.md`, `AGENTS/workflow/phase-3-implementation-review.md`, `AGENTS/iteration2.spec.md`, `AGENTS/iteration2.plan.md`, and the relevant knowledge index.
+- Iteration 2 implementation must stay within the accepted spec and approved plan.
+- Completed Iteration 1 artifacts are archived at `AGENTS/archive/iteration1.spec.md` and `AGENTS/archive/iteration1.plan.md`.
 
 ## Proposed Iterations
 
 ### Iteration 1: Movable UI Container Baseline
 
-- Status: Implemented / validation passed / pending user finalization review.
+- Status: Finalized / archived on 2026-05-11.
 - Goal: Add a minimal opencode-contributed View Container plus View that can be moved to the Secondary Side Bar or Panel through supported VS Code layout behavior.
 - Current state: `opencode.view` is contributed under dedicated `views.opencode`; dedicated `viewsContainers.activitybar` container ID `opencode` exists; manifest contract tests and E2E-style tests are present.
 - Included: dedicated contribution/container shape, view naming, minimal readiness/placeholder surface, unchanged terminal behavior, documented distinction between moving the built-in Terminal view/container and moving one terminal instance.
@@ -46,10 +47,11 @@ Keep the native VS Code terminal as the fast primary opencode workflow, while ad
 
 ### Iteration 2: Web Client Embedding Prototype
 
-- Goal: Load the local opencode web client or direct session URL inside the contributed view.
-- Included: server-not-running state, reuse known opencode port when available, reload/open-browser/open-terminal controls.
-- Excluded: guaranteed session-list sync, terminal emulation, broad state persistence.
-- User-testable outcome: sidebar view can interact with the web client when the server is running and fall back to native terminal when needed.
+- Status: Approved / Phase 3 implementation-review.
+- Goal: Make the contributed `opencode` view an alternate webview for the currently running extension-created opencode terminal.
+- Included: terminal-driven placeholder/web-client states, extension-created terminal tracking, terminal-close reset, launch action through existing terminal command.
+- Excluded: manually-created terminal attachment, arbitrary server discovery, guaranteed session-list sync, terminal emulation, broad state persistence.
+- User-testable outcome: sidebar view shows placeholder without an extension-created terminal, renders the tracked terminal web URL while active, and returns to placeholder when that terminal closes.
 - Validation: local checks plus manual launch/load/reload/fallback testing.
 
 ### Iteration 3: Styling Controls
