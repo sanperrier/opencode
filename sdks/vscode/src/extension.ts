@@ -1,55 +1,115 @@
-// This method is called when your extension is deactivated
-export function deactivate() {}
+import * as vscode from "vscode";
+import { OPENCODE_VIEW_ID } from "./config";
+import State from "./state";
 
-import * as vscode from "vscode"
-
-const TERMINAL_NAME = "opencode"
+const TERMINAL_NAME = "opencode";
 
 export function activate(context: vscode.ExtensionContext) {
-  const openNewTerminalDisposable = vscode.commands.registerCommand("opencode.openNewTerminal", async () => {
-    await openTerminal()
-  })
+  const logger = vscode.window.createOutputChannel("opencode", { log: true });
 
-  const openTerminalDisposable = vscode.commands.registerCommand("opencode.openTerminal", async () => {
-    // An opencode terminal already exists => focus it
-    const existingTerminal = vscode.window.terminals.find((t) => t.name === TERMINAL_NAME)
-    if (existingTerminal) {
-      existingTerminal.show()
-      return
-    }
+  const state = new State();
+  state.on("state-will-change", (prev, next) =>
+    logger.debug(`State will change: ${prev.type} -> ${next.type}`),
+  );
+  state.on("state-did-change", (prev, current) =>
+    logger.info(`State did change: ${prev.type} -> ${current.type}`),
+  );
+  state.on("terminal-did-open", (terminal, port) =>
+    logger.info(`Terminal did open: ${terminal.name} with port ${port}`),
+  );
+  state.on("terminal-did-close", (terminal, port) =>
+    logger.info(`Terminal did close: ${terminal.name} with port ${port}`),
+  );
+  state.on("server-did-start", (terminal, port, server) =>
+    logger.info(
+      `Server did start: ${server.url} on terminal ${terminal.name} with port ${port}`,
+    ),
+  );
+  state.on("server-did-stop", (terminal, port, server) =>
+    logger.info(
+      `Server did stop: ${server.url} on terminal ${terminal.name} with port ${port}`,
+    ),
+  );
+  state.on("server-ping", (...args) => logger.debug(`Server ping:`, ...args));
 
-    await openTerminal()
-  })
+  const opencodeViewProvider = new OpencodeWebviewProvider(state);
+  const opencodeViewDisposable = vscode.window.registerWebviewViewProvider(
+    OPENCODE_VIEW_ID,
+    opencodeViewProvider,
+  );
 
-  let addFilepathDisposable = vscode.commands.registerCommand("opencode.addFilepathToTerminal", async () => {
-    const fileRef = getActiveFile()
-    if (!fileRef) {
-      return
-    }
+  const openNewTerminalDisposable = vscode.commands.registerCommand(
+    "opencode.openNewTerminal",
+    async () => {
+      await createOpencodeTerminal();
+    },
+  );
 
-    const terminal = vscode.window.activeTerminal
-    if (!terminal) {
-      return
-    }
+  const openTerminalDisposable = vscode.commands.registerCommand(
+    "opencode.openTerminal",
+    async () => {
+      const existingTerminal = state.terminal;
+      if (existingTerminal) {
+        existingTerminal.show();
+        return;
+      }
 
-    if (terminal.name === TERMINAL_NAME) {
-      // @ts-ignore
-      const port = terminal.creationOptions.env?.["_EXTENSION_OPENCODE_PORT"]
-      port ? await appendPrompt(parseInt(port), fileRef) : terminal.sendText(fileRef, false)
-      terminal.show()
-    }
-  })
+      await createOpencodeTerminal();
+    },
+  );
 
-  context.subscriptions.push(openNewTerminalDisposable, openTerminalDisposable, addFilepathDisposable)
+  const addFilepathDisposable = vscode.commands.registerCommand(
+    "opencode.addFilepathToTerminal",
+    async () => {
+      const fileRef = getActiveFile();
+      if (!fileRef) {
+        return;
+      }
 
-  async function openTerminal() {
+      if (!state.terminal) {
+        return;
+      }
+
+      if (state.server?.online) {
+        await appendPrompt(state.server.url, fileRef);
+      } else {
+        state.terminal.sendText(fileRef, false);
+      }
+      state.terminal.show();
+    },
+  );
+
+  const closeTerminalDisposable = vscode.window.onDidCloseTerminal(
+    (terminal) => {
+      if (terminal !== state.terminal) {
+        return;
+      }
+
+      state.terminalDidClose(terminal);
+    },
+  );
+
+  context.subscriptions.push(
+    opencodeViewDisposable,
+    openNewTerminalDisposable,
+    openTerminalDisposable,
+    addFilepathDisposable,
+    closeTerminalDisposable,
+    logger, state,
+  );
+
+  async function createOpencodeTerminal() {
     // Create a new terminal in split screen
-    const port = Math.floor(Math.random() * (65535 - 16384 + 1)) + 16384
+    const port = Math.floor(Math.random() * (65535 - 16384 + 1)) + 16384;
     const terminal = vscode.window.createTerminal({
       name: TERMINAL_NAME,
       iconPath: {
-        light: vscode.Uri.file(context.asAbsolutePath("images/button-dark.svg")),
-        dark: vscode.Uri.file(context.asAbsolutePath("images/button-light.svg")),
+        light: vscode.Uri.file(
+          context.asAbsolutePath("images/button-dark.svg"),
+        ),
+        dark: vscode.Uri.file(
+          context.asAbsolutePath("images/button-light.svg"),
+        ),
       },
       location: {
         viewColumn: vscode.ViewColumn.Beside,
@@ -59,79 +119,259 @@ export function activate(context: vscode.ExtensionContext) {
         _EXTENSION_OPENCODE_PORT: port.toString(),
         OPENCODE_CALLER: "vscode",
       },
-    })
+    });
 
-    terminal.show()
-    terminal.sendText(`opencode --port ${port}`)
+    state.terminalDidOpen(terminal, port);
 
-    const fileRef = getActiveFile()
-    if (!fileRef) {
-      return
-    }
-
-    // Wait for the terminal to be ready
-    let tries = 10
-    let connected = false
-    do {
-      await new Promise((resolve) => setTimeout(resolve, 200))
-      try {
-        await fetch(`http://localhost:${port}/app`)
-        connected = true
-        break
-      } catch {}
-
-      tries--
-    } while (tries > 0)
-
-    // If connected, append the prompt to the terminal
-    if (connected) {
-      await appendPrompt(port, `In ${fileRef}`)
-      terminal.show()
-    }
+    terminal.show();
+    terminal.sendText(`opencode --port ${port}`);
   }
 
-  async function appendPrompt(port: number, text: string) {
-    await fetch(`http://localhost:${port}/tui/append-prompt`, {
+  async function appendPrompt(serverUrl: string, text: string) {
+    await fetch(new URL(`/tui/append-prompt`, serverUrl).toString(), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ text }),
-    })
+    });
   }
 
-  function getActiveFile() {
-    const activeEditor = vscode.window.activeTextEditor
+  function getActiveFile(): string | undefined {
+    const activeEditor = vscode.window.activeTextEditor;
     if (!activeEditor) {
-      return
+      return undefined;
     }
 
-    const document = activeEditor.document
-    const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri)
+    const document = activeEditor.document;
+    const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
     if (!workspaceFolder) {
-      return
+      return undefined;
     }
 
     // Get the relative path from workspace root
-    const relativePath = vscode.workspace.asRelativePath(document.uri)
-    let filepathWithAt = `@${relativePath}`
+    const relativePath = vscode.workspace.asRelativePath(document.uri);
+    let filepathWithAt = `@${relativePath}`;
 
     // Check if there's a selection and add line numbers
-    const selection = activeEditor.selection
+    const selection = activeEditor.selection;
     if (!selection.isEmpty) {
       // Convert to 1-based line numbers
-      const startLine = selection.start.line + 1
-      const endLine = selection.end.line + 1
+      const startLine = selection.start.line + 1;
+      const endLine = selection.end.line + 1;
 
       if (startLine === endLine) {
         // Single line selection
-        filepathWithAt += `#L${startLine}`
+        filepathWithAt += `#L${startLine}`;
       } else {
         // Multi-line selection
-        filepathWithAt += `#L${startLine}-${endLine}`
+        filepathWithAt += `#L${startLine}-${endLine}`;
       }
     }
 
-    return filepathWithAt
+    return filepathWithAt;
   }
+
+  const extensionApi = {
+    viewProvider: {
+      get mode() {
+        return opencodeViewProvider.mode;
+      },
+      get resolveCount() {
+        return opencodeViewProvider.resolveCount;
+      },
+      get renderCount() {
+        return opencodeViewProvider.renderCount;
+      },
+      getHtml: () => opencodeViewProvider.webviewView?.webview.html,
+    },
+    get terminal() {
+      return state.terminal;
+    },
+    get port() {
+      return state.port;
+    },
+    get server() {
+      return state.server;
+    },
+  };
+
+  return extensionApi;
+}
+
+export function deactivate() {}
+
+class OpencodeWebviewProvider implements vscode.WebviewViewProvider {
+  public get mode() {
+    return this._mode;
+  }
+  public get webviewView(): vscode.WebviewView | undefined {
+    return this._webviewView;
+  }
+  public readonly state: State;
+  public get renderCount() {
+    return this._renderCount;
+  }
+  public get resolveCount() {
+    return this._resolveCount;
+  }
+
+  constructor(state: State) {
+    this.state = state;
+    this.refresh();
+
+    this.state.on("state-did-change", this.refresh.bind(this));
+  }
+
+  public resolveWebviewView(webviewView: vscode.WebviewView) {
+    this._resolveCount++;
+    this._webviewView = webviewView;
+    webviewView.webview.options = {
+      enableScripts: true,
+    };
+    webviewView.webview.onDidReceiveMessage(async (message: WebviewMessage) => {
+      if (message.command !== "openTerminal") {
+        return;
+      }
+
+      await vscode.commands.executeCommand("opencode.openTerminal");
+    });
+    this.refresh();
+  }
+
+  refresh() {
+    if (!this.webviewView) {
+      return;
+    }
+
+    this._renderCount++;
+
+    switch (this.state.state) {
+      case "no-terminal":
+        this._mode = "placeholder";
+        this.webviewView.webview.html = this.renderPlaceholder();
+        return;
+      case "waiting-for-server":
+        this._mode = "loading";
+        this.webviewView.webview.html = this.renderLoading();
+        break;
+      case "online":
+        this._mode = "webClient";
+        this.webviewView.webview.html = this.renderWebClient(
+          this.state.server!.url,
+        );
+        break;
+    }
+  }
+
+  private renderPlaceholder() {
+    const nonce = getNonce();
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'nonce-${nonce}';">
+  <title>opencode</title>
+  <style>
+    body { align-items: center; background: transparent; color: var(--vscode-foreground); display: flex; font-family: var(--vscode-font-family); height: 100vh; justify-content: center; margin: 0; }
+    main { box-sizing: border-box; max-width: 28rem; padding: 1.5rem; text-align: center; }
+    h1 { font-size: 1rem; font-weight: 600; margin: 0 0 0.5rem; }
+    p { color: var(--vscode-descriptionForeground); line-height: 1.4; margin: 0 0 1rem; }
+    button { background: var(--vscode-button-background); border: 0; border-radius: 2px; color: var(--vscode-button-foreground); cursor: pointer; font: inherit; padding: 0.45rem 0.75rem; }
+    button:hover { background: var(--vscode-button-hoverBackground); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>opencode is not running</h1>
+    <p>Open opencode in the integrated terminal to show the web client here.</p>
+    <button type="button" id="open-terminal">Open opencode</button>
+  </main>
+  <script nonce="${nonce}">
+    const vscode = acquireVsCodeApi();
+    document.getElementById("open-terminal").addEventListener("click", () => {
+      vscode.postMessage({ command: "openTerminal" });
+    });
+  </script>
+</body>
+</html>`;
+  }
+
+  private renderLoading() {
+    const nonce = getNonce();
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'nonce-${nonce}';">
+  <title>opencode</title>
+  <style>
+    body { align-items: center; background: transparent; color: var(--vscode-foreground); display: flex; font-family: var(--vscode-font-family); height: 100vh; justify-content: center; margin: 0; }
+    main { box-sizing: border-box; max-width: 28rem; padding: 1.5rem; text-align: center; }
+    h1 { font-size: 1rem; font-weight: 600; margin: 0 0 0.5rem; }
+    p { color: var(--vscode-descriptionForeground); line-height: 1.4; margin: 0 0 1rem; }
+    button { background: var(--vscode-button-background); border: 0; border-radius: 2px; color: var(--vscode-button-foreground); cursor: pointer; font: inherit; padding: 0.45rem 0.75rem; }
+    button:hover { background: var(--vscode-button-hoverBackground); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>waiting for server at ${this.state.server?.url ?? ""}...</h1>
+    <p>Check opencode terminal for more details.</p>
+    <button type="button" id="open-terminal">Check terminal</button>
+  </main>
+  <script nonce="${nonce}">
+    const vscode = acquireVsCodeApi();
+    document.getElementById("open-terminal").addEventListener("click", () => {
+      vscode.postMessage({ command: "openTerminal" });
+    });
+  </script>
+</body>
+</html>`;
+  }
+
+  private renderWebClient(url: string) {
+    const webClientUrl = new URL(url);
+    if (!webClientUrl.href) {
+      throw new Error(`Unexpected opencode web client URL: ${url}`);
+    }
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; frame-src ${webClientUrl.origin}; style-src 'unsafe-inline';">
+  <title>opencode</title>
+  <style>
+    body { margin: 0; padding: 0; overflow: hidden; }
+    iframe { border: 0; height: 100vh; width: 100vw; }
+  </style>
+</head>
+<body>
+  <iframe title="opencode" src="${webClientUrl.href}"></iframe>
+</body>
+</html>`;
+  }
+
+  private _mode: "placeholder" | "loading" | "webClient" = "placeholder";
+  private _webviewView: vscode.WebviewView | undefined;
+  private _resolveCount = 0;
+  private _renderCount = 0;
+}
+
+type WebviewMessage = {
+  command?: string;
+};
+
+function getNonce() {
+  return Array.from({ length: 32 }, () =>
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".charAt(
+      Math.floor(Math.random() * 62),
+    ),
+  ).join("");
 }
